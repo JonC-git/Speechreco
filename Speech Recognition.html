@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech Recognition Demo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      color: #fff;
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+    }
+    #startBtn {
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 25px;
+      background-color: #ffffff;
+      color: #2575fc;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+    #startBtn:hover {
+      background-color: #e0e0e0;
+    }
+    #output {
+      margin-top: 30px;
+      font-size: 20px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <h1>🎤 Speech Recognition Demo</h1>
+  <button id="startBtn">Start Listening</button>
+  <div id="output">Your speech will appear here...</div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const output = document.getElementById('output');
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      output.innerText = 'Sorry, your browser does not support Speech Recognition.';
+      startBtn.disabled = true;
+    } else {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      startBtn.onclick = () => {
+        output.innerText = '🎧 Listening...';
+        recognition.start();
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        output.innerText = `🗣️ You said: "${transcript}"`;
+      };
+
+      recognition.onerror = (event) => {
+        output.innerText = `⚠️ Error occurred: ${event.error}`;
+      };
+
+      recognition.onend = () => {
+        console.log('Speech recognition service disconnected');
+      };
+    }
+  </script>
+</body>
+</html>
